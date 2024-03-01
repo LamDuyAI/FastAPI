@@ -13,7 +13,7 @@ class User(BaseModel):
     username: str
 
 class UserInDB(User):
-    hashed_password: str
+    password: str
     class Config:
         orm_mode = True
 

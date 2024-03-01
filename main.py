@@ -50,7 +50,7 @@ async def login_for_access_token(
 
 
 @app.post("/teachers/", response_model=schemas.TeacherBase, status_code=status.HTTP_201_CREATED, tags=["Teacher"])
-async def create_teacher(current_user: Annotated[models.User, Depends(security.get_current_active_user)],
+async def create_teacher(current_user: Annotated[models.User, Depends(security.get_current_user)],
                          teacher: schemas.TeacherBase,
                          db: Session = Depends(get_db)):
     # db_teacher = crud.create_teacher(db, teacher)
@@ -60,15 +60,17 @@ async def create_teacher(current_user: Annotated[models.User, Depends(security.g
 
 
 @app.get("/teacher/{teacher_id}", tags=["Teacher"])
-async def read_teacher(current_user: Annotated[models.User, Depends(security.get_current_active_user)], skip: int = 0,
+async def read_teacher(current_user: Annotated[models.User, Depends(security.get_current_user)], skip: int = 0,
                        limit: int = 100, db: Session = Depends(get_db)):
     teachers = crud.get_teacher(db, skip=skip, limit=limit)
     return teachers
 
 
 @app.get("/teachers/{teacher_id}", response_model=schemas.Teacher, tags=["Teacher"])
-async def read_teacher(current_user: Annotated[models.User, Depends(security.get_current_active_user)], teacher_id: int,
-                       db: Session = Depends(get_db)):
+async def read_teacher(
+        current_user: Annotated[models.User, Depends(security.get_current_user)],
+        teacher_id: int,
+        db: Session = Depends(get_db)):
     db_teacher = crud.get_teacher(db, teacher_id)
     if db_teacher is None:
         raise HTTPException(status_code=404, detail="Teacher not found!!!")
@@ -76,7 +78,7 @@ async def read_teacher(current_user: Annotated[models.User, Depends(security.get
 
 
 @app.get("/teachers/lens_name_teachers/{teacher_id}", tags=["Teacher"])
-async def return_lens_teacher_name(current_user: Annotated[models.User, Depends(security.get_current_active_user)],
+async def return_lens_teacher_name(current_user: Annotated[models.User, Depends(security.get_current_user)],
                                    teacher_id: int, db: Session = Depends(get_db)):
     db_teacher = crud.get_len_name(db, teacher_id)
     if db_teacher is None:
@@ -85,7 +87,7 @@ async def return_lens_teacher_name(current_user: Annotated[models.User, Depends(
 
 
 @app.delete("/teachers/{teacher_id}", tags=["Teacher"])
-async def delete_teacher(current_user: Annotated[models.User, Depends(security.get_current_active_user)],
+async def delete_teacher(current_user: Annotated[models.User, Depends(security.get_current_user)],
                          teacher_id: int, db: Session = Depends(get_db)):
     db_teacher = crud.get_teacher(db, teacher_id)
     if db_teacher is None:
@@ -94,7 +96,7 @@ async def delete_teacher(current_user: Annotated[models.User, Depends(security.g
 
 
 @app.put("/teachers/{teacher_id}", tags=["Teacher"])
-async def update_teacher(current_user: Annotated[models.User, Depends(security.get_current_active_user)],
+async def update_teacher(current_user: Annotated[models.User, Depends(security.get_current_user)],
                          body: schemas.TeacherBase, teacher_id: int, db: Session = Depends(get_db)):
     db_teacher = crud.get_teacher(db, teacher_id)
     if db_teacher is None:
@@ -112,14 +114,14 @@ async def create_student_for_teacher(
 
 
 @app.get("/students/", response_model=list[schemas.Student], tags=["Student"])
-async def read_students(current_user: Annotated[models.User, Depends(security.get_current_active_user)], skip: int = 0,
+async def read_students(current_user: Annotated[models.User, Depends(security.get_current_user)], skip: int = 0,
                         limit: int = 100, db: Session = Depends(get_db)):
     student = crud.get_student(db, skip=skip, limit=limit)
     return student
 
 
 @app.get("/student/{student_id}/SumPoint_of_student", tags=["Student"])
-async def return_SumPoint_of_Student(current_user: Annotated[models.User, Depends(security.get_current_active_user)],
+async def return_SumPoint_of_Student(current_user: Annotated[models.User, Depends(security.get_current_user)],
                                      student_id: int, db: Session = Depends(get_db)):
     SumPoint_of_student = crud.get_student_point(db, student_id)
     if SumPoint_of_student is None:
